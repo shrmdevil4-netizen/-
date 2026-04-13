@@ -1,4 +1,5 @@
 require('dotenv').config({ path: __dirname + '/../.env' });
+const http = require('http');
 const { Telegraf, Scenes, session } = require('telegraf');
 const { initDB, getUser, createUser } = require('./db');
 
@@ -7,6 +8,7 @@ const paymentScene = require('./scenes/payment');
 const adminScene = require('./scenes/admin');
 const cvWizard = require('./scenes/cvWizard');
 const SUPPORT_USERNAME = process.env.SUPPORT_USERNAME || 'CvSupport1';
+const PORT = Number(process.env.PORT || 0);
 
 function normalizeToken(raw) {
     if (!raw) return '';
@@ -146,6 +148,15 @@ async function startBot() {
     if (BOT_TOKEN) {
         const masked = `${BOT_TOKEN.slice(0, 8)}...${BOT_TOKEN.slice(-4)}`;
         console.log(`BOT_TOKEN detected (masked): ${masked}, length=${BOT_TOKEN.length}`);
+    }
+
+    if (PORT > 0) {
+        http.createServer((req, res) => {
+            res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('Bot is running');
+        }).listen(PORT, '0.0.0.0', () => {
+            console.log(`Health server listening on port ${PORT}`);
+        });
     }
     
     if (BOT_TOKEN && BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE') {

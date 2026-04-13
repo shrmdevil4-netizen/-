@@ -8,13 +8,20 @@ const adminScene = require('./scenes/admin');
 const cvWizard = require('./scenes/cvWizard');
 const SUPPORT_USERNAME = process.env.SUPPORT_USERNAME || 'CvSupport1';
 
-if (!process.env.BOT_TOKEN || process.env.BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
+function normalizeToken(raw) {
+    if (!raw) return '';
+    return raw.trim().replace(/^['\"]|['\"]$/g, '');
+}
+
+const BOT_TOKEN = normalizeToken(process.env.BOT_TOKEN);
+
+if (!BOT_TOKEN || BOT_TOKEN === 'YOUR_BOT_TOKEN_HERE') {
     console.warn('⚠️ WARNING: BOT_TOKEN is missing or not set in .env file!');
     console.warn('⚠️ The bot will not start until you provide a valid bot token from @BotFather.');
     // We intentionally don't process.exit here so the code remains valid, but launch will fail without a token.
 }
 
-const bot = new Telegraf(process.env.BOT_TOKEN || 'dummy_token_to_prevent_fatal_crash_on_init');
+const bot = new Telegraf(BOT_TOKEN || 'dummy_token_to_prevent_fatal_crash_on_init');
 
 // Memory Session (State across steps)
 bot.use(session());
@@ -135,8 +142,13 @@ bot.catch((err, ctx) => {
 async function startBot() {
     await initDB();
     console.log('Database initialized.');
+
+    if (BOT_TOKEN) {
+        const masked = `${BOT_TOKEN.slice(0, 8)}...${BOT_TOKEN.slice(-4)}`;
+        console.log(`BOT_TOKEN detected (masked): ${masked}, length=${BOT_TOKEN.length}`);
+    }
     
-    if (process.env.BOT_TOKEN && process.env.BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE') {
+    if (BOT_TOKEN && BOT_TOKEN !== 'YOUR_BOT_TOKEN_HERE') {
         await bot.launch({ dropPendingUpdates: true });
         console.log('Telegram Bot is successfully launched! 🚀');
     } else {

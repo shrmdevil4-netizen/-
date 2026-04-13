@@ -64,7 +64,7 @@ paymentScene.action('SHOW_ID', async (ctx) => {
 
 *بعد الدخول للمعرف، أرفق الصورة ومعرف ID الخاص بك للتفعيل.*
 
-• **سعر السيرة**: 9.99 ريال
+• **سعر السيرة**: 5 ريال
     `;
     
     await ctx.replyWithMarkdown(message);

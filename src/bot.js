@@ -49,7 +49,7 @@ bot.start(async (ctx) => {
 
     if (user && !user.is_subscribed && !user.is_admin) {
         // Non-subscribed user -> Payment flow
-        return ctx.reply(`أهلاً بك في بوت إنشاء السيرة الذاتية (CV).\n\nسعر إنشاء السيرة هو 9.99 ريال فقط.\nيرجى الاشتراك للبدء.\n\nلإكمال تفعيل الحساب بعد الدفع تواصل مع @${SUPPORT_USERNAME}.`, {
+        return ctx.reply(`أهلاً بك في بوت إنشاء السيرة الذاتية (CV).\n\nسعر إنشاء السيرة هو 5 ريال فقط.\nيرجى الاشتراك للبدء.\n\nلإكمال تفعيل الحساب بعد الدفع تواصل مع @${SUPPORT_USERNAME}.`, {
             reply_markup: {
                 inline_keyboard: [
                     [{ text: '💳 ادفع للاشتراك', callback_data: 'PAYMENT_START' }],
